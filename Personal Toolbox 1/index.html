@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="module" src="scripts/svgGenerator.js"></script>
+</head>
+<body>
+    <div style="display: flex;">
+        <span style="margin:10px">
+            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer1" style="background-color: #EEEDEB;" >
+
+            </svg>
+            <button onclick = "downloadSVG('#svgContainer1', 'Rectangles SVG')"> Save Rectangles SVG </button>
+        </span>
+        <span style="margin:10px">
+            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer2" style="background-color: #EEEDEB;" >
+
+            </svg>
+            <button onclick = "downloadSVG('#svgContainer2', 'Circles SVG')"> Save Circles SVG </button>
+        </span>
+        <span style="margin:10px">
+            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer3" style="background-color: #EEEDEB;" >
+
+            </svg>
+            <button onclick = "downloadSVG('#svgContainer3', 'Triangles SVG')"> Save Triangles SVG </button>
+        </span>
+        <span style="margin:10px">
+            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer4" style="background-color: #EEEDEB;" >
+
+            </svg>
+            <button onclick = "downloadSVG('#svgContainer4', 'Lines SVG')"> Save Lines SVG </button>
+        </span>
+    </div>
+
+    <script>
+       const downloadSVG = (elementID, downloadName) => {
+          const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'text/plain' });
+
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = downloadName || "download.svg";
+          link.click();
+
+          URL.revokeObjectURL(link.href);
+       };
+    </script>
+</body>
+</html>
