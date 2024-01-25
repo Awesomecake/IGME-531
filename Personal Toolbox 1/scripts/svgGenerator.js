@@ -33,13 +33,13 @@ const generateSVG = (svgTarget, svgData, elementType) => {
             case "circle":
                 svgContainer.innerHTML += `
                 <g transform="rotate(${element.rotation})">
-                    <circle cx="${element.x+element.width/2}" cy="${element.y+element.width/2}" r="${element.width/2}" style="fill:${element.fill}" ;/>
+                    <circle cx="${element.x+element.width/2}" cy="${element.y+element.width/2}" r="${element.width/2}" style="fill:${element.fill};"/>
                 </g>`;
                 break;
             case "ellipse":
                 svgContainer.innerHTML += `
                 <g transform="rotate(${element.rotation})">
-                    <ellipse cx="${element.x+element.width/2}" cy="${element.y+element.height/2}" rx="${element.width/2}" ry="${element.height/2}" style="fill:${element.fill}" />
+                    <ellipse cx="${element.x+element.width/2}" cy="${element.y+element.height/2}" rx="${element.width/2}" ry="${element.height/2}" style="fill:${element.fill};" />
                 </g>`;
                 break;
             case "triangle":
