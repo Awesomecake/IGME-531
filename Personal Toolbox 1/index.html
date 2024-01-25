@@ -9,25 +9,25 @@
 <body>
     <div style="display: flex;">
         <span style="margin:10px">
-            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer1" style="background-color: #EEEDEB;" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer1" style="background-color: #EEEDEB;" >
 
             </svg>
             <button onclick = "downloadSVG('#svgContainer1', 'Rectangles SVG')"> Save Rectangles SVG </button>
         </span>
         <span style="margin:10px">
-            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer2" style="background-color: #EEEDEB;" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer2" style="background-color: #EEEDEB;" >
 
             </svg>
             <button onclick = "downloadSVG('#svgContainer2', 'Circles SVG')"> Save Circles SVG </button>
         </span>
         <span style="margin:10px">
-            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer3" style="background-color: #EEEDEB;" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer3" style="background-color: #EEEDEB;" >
 
             </svg>
             <button onclick = "downloadSVG('#svgContainer3', 'Triangles SVG')"> Save Triangles SVG </button>
         </span>
         <span style="margin:10px">
-            <svg viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer4" style="background-color: #EEEDEB;" >
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1510" width="400" height="400"  id="svgContainer4" style="background-color: #EEEDEB;" >
 
             </svg>
             <button onclick = "downloadSVG('#svgContainer4', 'Lines SVG')"> Save Lines SVG </button>
@@ -36,7 +36,7 @@
 
     <script>
        const downloadSVG = (elementID, downloadName) => {
-          const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'text/plain' });
+          const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'image/svg+xml' });
 
           const link = document.createElement("a");
           link.href = URL.createObjectURL(file);
