@@ -1,62 +1,59 @@
-
-const generateSVG = (svgTarget) => {
-    const svgContainer = document.querySelector(svgTarget);
+const generateBoxes = (svgTag, callback, numBoxes) => {
+    let svgContainer = document.querySelector(svgTag);
     svgContainer.innerHTML = '';
 
-    generateBoxes(svgContainer);
-}
-
-const generateBoxes = (svgContainer) => {
     for(let i = 0; i < 8; i++)
     {
         for(let j = 0; j < 8; j++)
         {
-            let max = 15;
+            let max = 7;
 
-            let hSeparation = 130;
-            let vSeparation = 130;
+            let rng0 = (rng(max)+4)/10.0;
+            let width = 150*rng0;
+            let height = 150*rng0;
 
-            let rng0 = rng(max*2.5);
+            let newSVG = "";
+            for(let boxes = 0; boxes < numBoxes; boxes++)
+            {
+                newSVG += callback(width,height,rngArray(width/7));
 
-            let width = 140-rng0;
-            let height = 140-rng0;
+                rng0 = (rng(max)+4.5)/10.0;
+                width *= rng0;
+                height *= rng0;
+            }
 
-            svgContainer.innerHTML += generatePolyLineSquare(width,height,hSeparation*i+75,vSeparation*j+75,rngArray(width/8));
-
-            rng0 = rng(max*2.5);
-            width -= rng0;
-            height -= rng0;
-            svgContainer.innerHTML += generatePolyLineSquare(width,height,hSeparation*i+75,vSeparation*j+75,rngArray(width/8));
-            
-            rng0 = rng(max*2.5);
-            width -= rng0;
-            height -= rng0;
-            svgContainer.innerHTML += generatePolyLineSquare(width,height,hSeparation*i+75,vSeparation*j+75,rngArray(width/8));
-            
-            rng0 = rng(max*2.5);
-            width -= rng0;
-            height -= rng0;
-            svgContainer.innerHTML += generatePolyLineSquare(width,height,hSeparation*i+75,vSeparation*j+75,rngArray(width/8));
-
-            rng0 = rng(max*2.5);
-            width -= rng0;
-            height -= rng0;
-            svgContainer.innerHTML += generatePolyLineSquare(width,height,hSeparation*i+75,vSeparation*j+75,rngArray(width/8));
+            svgContainer.innerHTML += createGrouping(newSVG,(i-j)*5,[130*i+75,130*j+75]);
         }
     }
 }
 
-const generatePolyLineSquare = (width,height,hOffset,vOffset, randomArray) => {
+const generatePolyLineSquare = (width,height,randomArray) => {
     return `<polyline points="
-            ${hOffset-width/2 + randomArray[0]},${vOffset-height/2+randomArray[4]} 
-            ${hOffset+width/2 + randomArray[1]},${vOffset-height/2+randomArray[5]} 
-            ${hOffset+width/2 + randomArray[2]},${vOffset+height/2+randomArray[6]} 
-            ${hOffset-width/2 + randomArray[3]},${vOffset+height/2+randomArray[7]} 
-            ${hOffset-width/2 + randomArray[0]},${vOffset-height/2+randomArray[4]}
+            ${-width/2 + randomArray[0]},${-height/2+randomArray[4]} 
+            ${width/2 + randomArray[1]},${-height/2+randomArray[5]} 
+            ${width/2 + randomArray[2]},${height/2+randomArray[6]} 
+            ${-width/2 + randomArray[3]},${height/2+randomArray[7]} 
+            ${-width/2 + randomArray[0]},${-height/2+randomArray[4]}
         " fill="none" stroke="black" />`
+}
+
+const generatePathSquare = (width,height, randomArray) => {
+    return `<path fill="transparent" stroke="black" stroke-width="1" d="
+                M ${-width/2 + randomArray[0]} ${-height/2+randomArray[4]} 
+                L ${width/2 + randomArray[1]} ${-height/2+randomArray[5]}
+                L ${width/2 + randomArray[2]} ${height/2+randomArray[6]}
+                L ${-width/2 + randomArray[3]} ${height/2+randomArray[7]} 
+                L ${-width/2 + randomArray[0]} ${-height/2+randomArray[4]} 
+            Z"/>`;
+};
+
+const createGrouping = (svg, rotate, translate = [0,0], scale = [1,1]) => {
+    return `<g transform=" translate(${translate[0]},${translate[1]}) rotate(${rotate})scale(${scale[0]},${scale[1]})"> ${svg} </g>`;
 }
 
 const rng = (max) => { return Math.floor(Math.random() * max); }
 const rngArray = (max) => { return [rng(max),rng(max),rng(max),rng(max),rng(max),rng(max),rng(max),rng(max)] }
 
-generateSVG("#svgContainer1");
+generateBoxes("#svgContainer1",generatePolyLineSquare,15);
+
+generateBoxes("#svgContainer2",generatePathSquare,5);
