@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Toolbox - Recode Sainte-Victoire en Rouge</title>
+    <script type="module" src="scripts/svgGenerator.js"></script>
+</head>
+<body>
+    <div style="display: flex;">
+        <span style="margin:10px; width: 900px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1100 3000" width="800" height="1600"  id="svgContainer1" style="background-color: #EEEDEB;" >
+
+            </svg>
+            <button onclick = "downloadSVG('#svgContainer1', 'Poly Line SVG')"> Save Poly Line SVG </button>
+        </span>
+        <span style="margin:10px; width: 900px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1100 3000" width="800" height="1600"  id="svgContainer2" style="background-color: #EEEDEB;" >
+
+            </svg>
+            <button onclick = "downloadSVG('#svgContainer2', 'Path SVG')"> Save Path SVG </button>
+        </span>
+    </div>
+
+    <script>
+       const downloadSVG = (elementID, downloadName) => {
+          const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'image/svg+xml' });
+
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(file);
+          link.download = downloadName || "download.svg";
+          link.click();
+
+          URL.revokeObjectURL(link.href);
+       };
+    </script>
+</body>
+</html>
