@@ -7,37 +7,29 @@
     <script type="module" src="scripts/svgGenerator.js"></script>
 </head>
 <body>
-    <div style="display: flex;">
-        <span style="margin:10px; width: 900px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1500" width="800" height="800"  id="svgContainer1" style="background-color: #EEEDEB; box-shadow: 0px 0px 5px black; border-radius:15px" >
-
-            </svg>
-            <button onclick = "downloadSVG('#svgContainer1', 'Poly Line SVG')"> Save Interruptions SVG </button>
-        </span>
-        <span style="margin:10px; width: 900px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1500" width="800" height="800"  id="svgContainer2" style="background-color: #EEEDEB; box-shadow: 0px 0px 5px black; border-radius:15px" >
-
-            </svg>
-            <button onclick = "downloadSVG('#svgContainer2', 'Path SVG')"> Save Custom Interruptions SVG </button>
-        </span>
-        <span style="margin:10px; width: 900px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1500 1500" width="800" height="800"  id="svgContainer3" style="background-color: #EEEDEB; box-shadow: 0px 0px 5px black; border-radius:15px" >
-
-            </svg>
-            <button onclick = "downloadSVG('#svgContainer3', 'Path SVG')"> Save Smooth Interruptions SVG </button>
-        </span>
+    <div style="display: flex; flex-wrap: wrap;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer1" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer1', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer2" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer2', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer3" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer3', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer4" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer4', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer5" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer5', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer6" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer6', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer7" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer7', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 1600" width="400" height="400"  id="svgContainer8" style="background-color: #EEEDEB;" onclick = "downloadSVG('#svgContainer8', 'Tessellation SVG')"></svg>
     </div>
 
     <script>
        const downloadSVG = (elementID, downloadName) => {
-          const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'image/svg+xml' });
+        if (confirm("Download SVG?")) {
+            const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'image/svg+xml' });
 
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(file);
-          link.download = downloadName || "download.svg";
-          link.click();
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(file);
+            link.download = downloadName || "download.svg";
+            link.click();
 
-          URL.revokeObjectURL(link.href);
+            URL.revokeObjectURL(link.href);
+        } 
        };
     </script>
 </body>

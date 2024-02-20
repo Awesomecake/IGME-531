@@ -1,4 +1,4 @@
-const generateTiling = (svgTag, callback, gridWidth, gridHeight, size) => {
+const generateTiling = (svgTag, callbacks=[generateTruchet], gridWidth, gridHeight, size) => {
     let svgContainer = document.querySelector(svgTag);
     svgContainer.innerHTML = '';
 
@@ -7,89 +7,119 @@ const generateTiling = (svgTag, callback, gridWidth, gridHeight, size) => {
     {
         for(let j = 0; j < gridWidth; j++)
         {
-            output += callback(i,j,size,size,5);
+            output += callbacks[rng(callbacks.length)](i+0.5,j+0.5,size,size,2,"black");
         }
     }
 
     svgContainer.innerHTML = output;
 }
 
-const generateCurve = (offsetX, offsetY,width,height,strokewidth) => {
-    switch(rng(4))
-    {
-        case 3:
-            return `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
-            d="M${offsetX*width},${offsetY*height} 
-            a${width},${height} 0 
-            0,1 
-            ${width},${height}" />`
-        case 2:
-            return `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
-            d="M${offsetX*width},${offsetY*height+height} 
-            a${width},${height} 0 
-            0,1 
-            ${width},-${height}" />`
-        case 1:
-            return `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
-            d="M${offsetX*width+width},${offsetY*height} 
-            a${width},${height} 0 
-            0,1 
-            -${width},${height}" />`
-        case 0:
-            return `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
-            d="M${offsetX*width+width},${offsetY*height+height} 
-            a${width},${height} 0 
-            0,1 
-            -${width},-${height}" />`
-    }
-}
-
-const generateTruchet = (offsetX, offsetY,width,height,strokewidth) => {
-    let output = "";
-
-    switch(rng(2))
-    {
-        case 0:
-            //Line One
-            output = `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
-            d="M${offsetX*width-width/2},${offsetY*height} 
-            a${width/2},${height/2} 0 
-            0,1 
-            ${width/2},${height/2}" />`
+const generateCross = (offsetX, offsetY,width,height,strokewidth,strokeColor="red") => {
+    //Line One
+    let output = `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M${-width/2},0 L${width/2},${0}" />`
         
-            //Line Two
-            output += `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
-            d="M${offsetX*width+width/2},${offsetY*height} 
-            a${width/2},${height/2} 0 
-            0,1 
-            ${-width/2},${-height/2}" />`
-            break;
-        case 1:
-            //Line One
-            output = `<path fill="none" stroke="blue" stroke-width="${strokewidth}" 
-            d="M${offsetX*width},${offsetY*height+height/2} 
-            a${width/2},${height/2} 0 
-            0,1 
-            ${width/2},${-height/2}" />`
+    //Line Two
+    output += `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M0,${-height/2} L${0},${height/2}" />`
 
-            //Line Two
-            output += `<path fill="none" stroke="blue" stroke-width="${strokewidth}" 
-            d="M${offsetX*width},${offsetY*height-height/2} 
-            a${width/2},${height/2} 0 
-            0,1 
-            ${-width/2},${height/2}" />`
-            break;
-    }
-    return output;
+    return createGrouping(output, {rotation: rng(2)*90, translation: [offsetX*width,offsetY*height]});
 }
 
-const createGrouping = (svg, rotate, translate = [0,0], scale = [1,1]) => {
-    return `<g transform=" translate(${translate[0]},${translate[1]}) rotate(${rotate})scale(${scale[0]},${scale[1]})"> ${svg} </g>`;
+const generateDiagonal = (offsetX, offsetY,width,height,strokewidth,strokeColor="black") => {
+    //Line One
+    let output = `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M${-width/2},0 L${0},${height/2}" />`
+        
+    //Line Two
+    output += `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M0,${-height/2} L${width/2},${0}" />`
+
+    return createGrouping(output, {rotation: rng(2)*90, translation: [offsetX*width,offsetY*height]});
+}
+
+const generateArrow = (offsetX, offsetY,width,height,strokewidth,strokeColor="blue") => {
+    //Line One
+    let output = `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M${-width/2},0 L0,${height/2} L${width/2},0"/>`
+
+    output += `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M0,${height/2} L0,${-height/2}"/>`
+
+    return createGrouping(output, {rotation: rng(4)*90, translation: [offsetX*width,offsetY*height]});
+}
+
+const generateCircle = (offsetX, offsetY,width,height,strokewidth,strokeColor="purple") => {
+    let output = `<path stroke="${strokeColor}" stroke-width="${strokewidth}" fill="none"
+    d="M ${-width/2}, ${0}
+      a ${width/2},${width/2} 0 1,1 ${width},0
+      a ${width/2},${width/2} 0 1,1 -${width},0"/>`
+
+    return createGrouping(output, {translation: [offsetX*width,offsetY*height]});
+}
+
+const generateTruchet = (offsetX, offsetY,width,height,strokewidth,strokeColor="green") => {
+    //Line One
+    let output = `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M${-width/2},0 a${width/2},${height/2} 0 0,1 ${width/2},${height/2}" />`
+        
+    //Line Two
+    output += `<path fill="none" stroke="${strokeColor}" stroke-width="${strokewidth}" 
+        d="M${width/2},0 a${width/2},${height/2} 0 0,1 ${-width/2},${-height/2}" />`
+
+    return createGrouping(output, {rotation: rng(2)*90, translation: [offsetX*width,offsetY*height]});
+}
+
+const createGrouping = (svg, {rotation = 0, translation = [0,0], pivot = [0,0], scale = [1,1]} ) => {
+    return `<g transform=" translate(${translation[0]},${translation[1]}) rotate(${rotation},${pivot[0]},${pivot[1]})scale(${scale[0]},${scale[1]})"> ${svg} </g>`;
 }
 
 const rng = (max) => { return Math.floor(Math.random() * max); }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-generateTiling('#svgContainer1', generateTruchet,30,30,80);
-generateTiling('#svgContainer2', generateCurve, 70,70,50);
+generateTiling('#svgContainer1', [generateCircle, generateTruchet],20,20,80);
+generateTiling('#svgContainer2', [generateTruchet], 20,20,80);
+generateTiling('#svgContainer3', [generateDiagonal], 20,20,80);
+generateTiling('#svgContainer4', [generateTruchet,generateDiagonal, generateCross,generateArrow, generateCircle], 20,20,80);
+generateTiling('#svgContainer5', [generateCross], 20,20,80);
+generateTiling('#svgContainer6', [generateCross,generateTruchet], 20,20,80);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Test Curve
+////////////////////////////////////////////////////////////////////////////////////////
+// const generateCurve = (offsetX, offsetY,width,height,strokewidth) => {
+//     let svg = `<path fill="none" stroke="red" stroke-width="${strokewidth}" 
+//     d="M${width},${height} 
+//     a${width},${height} 0 
+//     0,1 
+//     -${width},-${height}" />`
+
+//     switch(rng(4))
+//     {
+//         case 0:
+//             return createGrouping(svg, {rotation: 0, translation: [offsetX*width,offsetY*height], pivot: [width/2,height/2]});
+//         case 1:
+//             return createGrouping(svg, {rotation: 90, translation: [offsetX*width,offsetY*height], pivot: [width/2,height/2]});
+//         case 2:
+//             return createGrouping(svg, {rotation: 180, translation: [offsetX*width,offsetY*height], pivot: [width/2,height/2]});
+//         case 3:
+//             return createGrouping(svg, {rotation: 270, translation: [offsetX*width,offsetY*height], pivot: [width/2,height/2]});
+//     }
+// }
