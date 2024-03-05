@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1: Plotting Tiles</title>
+    <script type="module" src="scripts/svgGenerator.js"></script>
+</head>
+<body>
+    <div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height=800 viewBox="-300 -300 400 400"  id="svgContainer1" style="background-color: #EEEDEB; margin:10px" onclick = "downloadSVG('#svgContainer1', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height=800 viewBox="-300 -300 400 400"  id="svgContainer2" style="background-color: #EEEDEB; margin:10px" onclick = "downloadSVG('#svgContainer2', 'Tessellation SVG')"></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height=800 viewBox="-300 -300 400 400"  id="svgContainer3" style="background-color: #EEEDEB; margin:10px" onclick = "downloadSVG('#svgContainer3', 'Tessellation SVG')"></svg>
+    </div>
+
+    <script>
+       const downloadSVG = (elementID, downloadName) => {
+        if (confirm("Download SVG?")) {
+            const file = new Blob([document.querySelector(elementID).outerHTML], { type: 'image/svg+xml' });
+
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(file);
+            link.download = downloadName || "download.svg";
+            link.click();
+
+            URL.revokeObjectURL(link.href);
+        } 
+       };
+    </script>
+</body>
+</html>
