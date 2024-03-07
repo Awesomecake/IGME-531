@@ -1,164 +1,60 @@
 //https://paulbourke.net/fractals/lsys/
-let alphabet = ['F', 'G', '+', '-', '[', ']'];
+import { Fractal } from "./fractal.js";
 
-//#region Generation Requirements
-const iterate_once = (lindenmayerString, rules) => {
-  let newString = '';
-  for (let i = 0; i < lindenmayerString.length; i++) {
-    const result = rules[lindenmayerString[i]];
-    newString += result || lindenmayerString[i];
-  }
-  return newString;
-}
+const svg1 = document.querySelector("#svgContainer1");
+const svg2 = document.querySelector("#svgContainer2");
+const svg3 = document.querySelector("#svgContainer3");
 
-const iterateNTimes = ({numLoops, inputString, ruleset}) => {
-  let newString = inputString;
-  for (let i = 0; i < numLoops; i++) {
-    newString = iterate_once(newString, ruleset);
-  }
-  return newString;
-};
+let fractal = new Fractal({numLoops: 6, inputString:'F', 
+  ruleset:{
+    'F': 'G+[[F]-F]-G[-GF]+F',
+    'G': 'GG',
+  } 
+});
+fractal.generateData();
 
-const makeVisual = (options, lindenmayerString) => {
-  let theSvgString = '';
-  
-  // Basically constants
-  let angle = (options.angle || 90) * Math.PI / 180;
-  let startingPoint = options.startingPoint || [0, 0];
-  let lineLength = options.lineLength || 10;
-
-  // State
-  let rotation = 0;
-  let points = [startingPoint];
-
-  const moveForward = () => {
-    const lastPoint = points[points.length - 1];
-
-    const dx = Math.cos(rotation) * lineLength;
-    const dy = Math.sin(rotation) * lineLength;
-
-    points.push([lastPoint[0] + dx, lastPoint[1] + dy]);
-  };
-
-  let stack = [];
-
-  const whatToDo = (char) => {
-    switch (char)
-    {
-        case '+':
-            rotation = rotation - angle;
-            break;
-        case '-':
-            rotation = rotation + angle;
-            break;
-        case '[':
-            stack.push({position: points[points.length-1], rotation: rotation});
-            break;
-        case ']':
-            let out = stack.pop();
-            theSvgString += `<polyline points="${points.join(' ')}" 
-                                fill="none" stroke="black" 
-                                stroke-width="1px"/>`;
-            points = [out.position];
-            rotation = out.rotation;
-            break;
-        default:
-            moveForward();
-    }
-  };
-
-  for (let i = 0; i < lindenmayerString.length; i++) {
-    whatToDo(lindenmayerString[i]);
-  }
-
-  // return a path moving through all the points
-  return theSvgString + `<polyline points="${points.join(' ')}" 
-                    fill="none" stroke="black" 
-                    stroke-width="1px"/>`;
-  
-};
-//#endregion
-
-const createLSystem = (svgTag, stringRuleset, visualRuleset) => {
-    const expanded = iterateNTimes(stringRuleset);
-    
-    const result = makeVisual(visualRuleset, expanded);
-    
-    // get result into the svg in the dom
-    const svg = document.querySelector(svgTag);
-    svg.innerHTML = result;
-}
-
-createLSystem("#svgContainer1", {
-        numLoops: 10, 
-        inputString:'F', 
-        ruleset:{
-            'F': 'G-F-G',
-            'G': 'F+G+F',
-        } 
-    },
-    {
-        lineLength: 1.5,
-        angle: 60,
-        startingPoint: [-300, 0]
-    }
-)
-
-// createLSystem("#svgContainer2", {
-//         numLoops: 5, 
-//         inputString:'F', 
-//         ruleset:{
-//             'F': 'G+[[F]-F]-G[-GF]+F',
-//             'G': 'GG',
-//         } 
-//     },
-//     {
-//         lineLength: 5.5,
-//         angle: 25,
-//         startingPoint: [-350, -150]
-//     }
-// )
-
-// createLSystem("#svgContainer2", {
-//     numLoops: 6, 
-//     inputString:'Y', 
-//     ruleset:{
-//         'X': 'X[-FFF][+FFF]FX',
-//         'Y': 'YFX[+Y][-Y]',
-//     } 
-// },
-// {
-//     lineLength: 2.5,
-//     angle: 25.7,
-//     startingPoint: [-250, -150]
-// }
-// )
-
-createLSystem("#svgContainer2", {
-    numLoops: 6, 
-    inputString:'F+F+F+F', 
-    ruleset:{
-        'F': 'FF+F+F+F+F+F-F',
-    } 
-},
+for(let i = 0; i < 6; i++)
 {
-    lineLength: 2.5,
-    angle: 90,
-    startingPoint: [0, 0]
+  fractal.drawSVG(svg1,{lineLength: 1.5, startAngle:i*60, angleOffset: -25, startingPoint: [Math.cos(i*Math.PI/3)*-50-100, Math.sin(i*Math.PI/3)*-50-100]});
 }
-)
 
-createLSystem("#svgContainer3", {
-    numLoops: 3, 
-    inputString:'-YF', 
-    ruleset:{
-        'X': 'XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-',
-        'Y': '+FXFX-YF-YF+FX+FXYF+FX-YFYF-FX-YF+FXYFYF-FX-YFFX+FX+YF-YF-FX+FX+YFY',
-    } 
-},
+// let fractal = new Fractal({numLoops: 10, inputString:'F', 
+//   ruleset:{
+//     'F': 'G-F-G',
+//     'G': 'F+G+F',
+//   } 
+// });
+
+// fractal.generateData();
+// fractal.drawSVG(svg1,{lineLength: 1.5, angleOffset: 60, startingPoint: [-300, 0]});
+
+///////////////////////////////////
+
+// let fractal2 = new Fractal({numLoops: 4, inputString:'F+F+F+F', ruleset:{'F': 'FF+F+F+F+F+F-F',} });
+// fractal2.generateData();
+// fractal2.drawSVG(svg2, {lineLength: 2.5, startAngle:0, angleOffset: 90, startingPoint:[0,50]});
+
+let fractal2 = new Fractal({numLoops: 6, inputString:'Y', 
+  ruleset:{
+    'X': 'X[-FFF][+FFF]FX',
+    'Y': 'YFX[+Y][-Y]',
+  } 
+});
+fractal2.generateData();
+
+for(let i = 0; i < 6; i++)
 {
-    lineLength: 1.5,
-    angle: 90,
-    startingPoint: [-287.5, -287.5]
+  fractal2.drawSVG(svg2,{lineLength: 1.5, startAngle:i*60, angleOffset: -25.7, startingPoint: [Math.cos(i*Math.PI/3)*-50-100, Math.sin(i*Math.PI/3)*-50-100]});
 }
-)
+
+/////////////////////////////////
+
+let fractal3 = new Fractal({numLoops: 3, inputString:'-YF', 
+  ruleset:{
+    'X': 'XFX-YF-YF+FX+FX-YF-YFFX+YF+FXFXYF-FX+YF+FXFX+YF-FXYF-YF-FX+FX+YFYF-',
+    'Y': '+FXFX-YF-YF+FX+FXYF+FX-YFYF-FX-YF+FXYFYF-FX-YFFX+FX+YF-YF-FX+FX+YFY',
+  }  
+});
+
+fractal3.generateData();
+fractal3.drawSVG(svg3, {lineLength: 1.5, startAngle:0, angleOffset: 90, startingPoint:[-287.5, -287.5]});
