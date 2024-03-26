@@ -18,22 +18,6 @@ for(let i = 0; i < 6; i++)
   fractal.drawSVG(svg1,{lineLength: 1.5, startAngle:i*60, angleOffset: -25, startingPoint: [Math.cos(i*Math.PI/3)*-50-100, Math.sin(i*Math.PI/3)*-50-100]});
 }
 
-// let fractal = new Fractal({numLoops: 10, inputString:'F', 
-//   ruleset:{
-//     'F': 'G-F-G',
-//     'G': 'F+G+F',
-//   } 
-// });
-
-// fractal.generateData();
-// fractal.drawSVG(svg1,{lineLength: 1.5, angleOffset: 60, startingPoint: [-300, 0]});
-
-///////////////////////////////////
-
-// let fractal2 = new Fractal({numLoops: 4, inputString:'F+F+F+F', ruleset:{'F': 'FF+F+F+F+F+F-F',} });
-// fractal2.generateData();
-// fractal2.drawSVG(svg2, {lineLength: 2.5, startAngle:0, angleOffset: 90, startingPoint:[0,50]});
-
 let fractal2 = new Fractal({numLoops: 6, inputString:'Y', 
   ruleset:{
     'X': 'X[-FFF][+FFF]FX',
