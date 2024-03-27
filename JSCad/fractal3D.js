@@ -1,3 +1,9 @@
+const { booleans, colors, primitives, transforms } = jscadModeling // modeling comes from the included MODELING library
+
+const { intersect, subtract, union } = booleans
+const { colorize, colorNameToRgb } = colors
+const { cube, sphere, rectangle } = primitives
+
 export class Fractal3D{
     constructor({numLoops, inputString, ruleset})
     {
@@ -25,28 +31,32 @@ export class Fractal3D{
         this.fractalString = newString;
     }
 
-    drawSVG(options = {lineLength:10, startAngle:0,angleOffset:90, startingPoint:[0,0]})
+    drawSVG(options)
     {
         let objectList = [];
         let pointSum = 0;
   
         // Basically constants
-        options.angleOffset = options.angleOffset * Math.PI / 180;
+        let lineLength = options.lineLength || 10;
+        let angleOffset = options.angleOffset * Math.PI / 180 || 90
 
         // State
-        let rotation = options.startAngle*Math.PI/180;
-        let points = [options.startingPoint];
+        let rotation = options.startAngle*Math.PI/180 || 0;
+        let points = [options.startingPoint || [0,0]];
 
         const moveForward = () => {
             const lastPoint = points[points.length - 1];
         
-            const dx = Math.cos(rotation) * options.lineLength;
-            const dy = Math.sin(rotation) * options.lineLength;
+            const dx = Math.cos(rotation) * lineLength;
+            const dy = Math.sin(rotation) * lineLength;
         
             points.push([lastPoint[0] + dx, lastPoint[1] + dy]);
             pointSum++;
 
-            objectList.push(transforms.translate(lastPoint,cube({ size: 5 })))
+            let object = transforms.scaleX(lineLength,cube({ size: 1 }));
+            object = transforms.rotate([0,0,rotation],object);
+            object = transforms.translate([lastPoint[0]+dx/2,lastPoint[1]+dy/2],object);
+            objectList.push(transforms.rotate([0,-1,0],object))
         };
       
         let stack = [];
@@ -55,10 +65,10 @@ export class Fractal3D{
             switch (char)
             {
                 case '+':
-                    rotation = rotation - options.angleOffset;
+                    rotation = rotation - angleOffset;
                     break;
                 case '-':
-                    rotation = rotation + options.angleOffset;
+                    rotation = rotation + angleOffset;
                     break;
                 case '[':
                     stack.push({position: points[points.length-1], rotation: rotation});
@@ -80,39 +90,3 @@ export class Fractal3D{
         return objectList;
     }
 }
-
-import { render } from './render.js';
-
-const { booleans, colors, primitives, transforms } = jscadModeling // modeling comes from the included MODELING library
-
-const { intersect, subtract, union } = booleans
-const { colorize, colorNameToRgb } = colors
-const { cube, sphere } = primitives
-
-const demo = (parameters) => {
-    const size = parameters.size;
-
-    // const shell = subtract( // https://openjscad.xyz/docs/module-modeling_booleans.html#.subtract
-    //     cube({ size: size }), // https://openjscad.xyz/docs/module-modeling_primitives.html#.cube
-    //     sphere({ radius: 2/3 * size, segments: 32 }) // https://openjscad.xyz/docs/module-modeling_primitives.html#.sphere
-    // );
-    // const center = booleans.intersect( // https://openjscad.xyz/docs/module-modeling_booleans.html#.intersect
-    //     primitives.sphere({ radius: 1/3 * size, segments: 32 }), 
-    //     primitives.cuboid({ size: [1/2 * size, 1/2 * size, 1/2 * size] }) // https://openjscad.xyz/docs/module-modeling_primitives.html#.cuboid
-    // );
-
-    let fractal = new Fractal3D({numLoops: 5, inputString:'F', 
-        ruleset:{
-            'F': 'G+[[F]-F]-G[-GF]+F',
-            'G': 'GG',
-        } 
-    });
-
-    fractal.generateData();
-    
-    // https://openjscad.xyz/docs/module-modeling_colors.html#.colorize
-    // https://openjscad.xyz/docs/module-modeling_colors.html#.colorNameToRgb
-    return fractal.drawSVG();
-}
-
-render(document.getElementById("render"), demo({ size: 300 }))
