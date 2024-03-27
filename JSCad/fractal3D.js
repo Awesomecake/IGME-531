@@ -46,7 +46,7 @@ export class Fractal3D{
             points.push([lastPoint[0] + dx, lastPoint[1] + dy]);
             pointSum++;
 
-            objectList.push(cube({ size: 5 }))
+            objectList.push(transforms.translate(lastPoint,cube({ size: 5 })))
         };
       
         let stack = [];
@@ -101,7 +101,7 @@ const demo = (parameters) => {
     //     primitives.cuboid({ size: [1/2 * size, 1/2 * size, 1/2 * size] }) // https://openjscad.xyz/docs/module-modeling_primitives.html#.cuboid
     // );
 
-    let fractal = new Fractal3D({numLoops: 2, inputString:'F', 
+    let fractal = new Fractal3D({numLoops: 5, inputString:'F', 
         ruleset:{
             'F': 'G+[[F]-F]-G[-GF]+F',
             'G': 'GG',
