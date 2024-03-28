@@ -1,10 +1,8 @@
 const { booleans, colors, primitives, transforms } = jscadModeling // modeling comes from the included MODELING library
 
-const { intersect, subtract, union } = booleans
-const { colorize, colorNameToRgb } = colors
-const { cube, sphere, rectangle } = primitives
+const { cube } = primitives
 
-export class Fractal3D{
+export class Fractal2D{
     constructor({numLoops, inputString, ruleset})
     {
         this.numLoops = numLoops;
@@ -31,7 +29,7 @@ export class Fractal3D{
         this.fractalString = newString;
     }
 
-    // options: {lineLength, startPitch, startYaw, angleOffset, startingPoint}
+    // options: {lineLength, startAngle, angleOffset, startingPoint}
     drawSVG(options)
     {
         let objectList = [];
@@ -41,22 +39,20 @@ export class Fractal3D{
         let angleOffset = options.angleOffset * Math.PI / 180 || 90
 
         // State
-        let yaw = options.startYaw*Math.PI/180 || 0;
-        let pitch = options.startPitch*Math.PI/180 || 0;
-        let points = [options.startingPoint || [0,0,0]];
+        let rotation = options.startAngle*Math.PI/180 || 0;
+        let points = [options.startingPoint || [0,0]];
 
         const moveForward = () => {
             const lastPoint = points[points.length - 1];
-                    
-            const dx = Math.cos(yaw) * Math.cos(pitch) * lineLength;
-            const dy = Math.sin(yaw) * Math.cos(pitch) * lineLength;
-            const dz = Math.sin(pitch) * lineLength;
         
-            points.push([lastPoint[0] + dx, lastPoint[1] + dy, lastPoint[2] + dz]);
+            const dx = Math.cos(rotation) * lineLength;
+            const dy = Math.sin(rotation) * lineLength;
+        
+            points.push([lastPoint[0] + dx, lastPoint[1] + dy]);
 
             let object = transforms.scaleX(lineLength,cube({ size: 1 }));
-            object = transforms.rotate([0,-pitch,yaw],object);
-            object = transforms.translate([lastPoint[0]+dx/2,lastPoint[1]+dy/2, lastPoint[2]+dz/2],object);
+            object = transforms.rotate([0,0,rotation],object);
+            object = transforms.translate([lastPoint[0]+dx/2,lastPoint[1]+dy/2],object);
             objectList.push(object)
         };
       
@@ -66,24 +62,18 @@ export class Fractal3D{
             switch (char)
             {
                 case '+':
-                    yaw -= angleOffset;
+                    rotation = rotation - angleOffset;
                     break;
                 case '-':
-                    yaw += angleOffset;
-                    break;
-                case '<':
-                    pitch -= angleOffset;
-                    break;
-                case '>':
-                    pitch += angleOffset;
+                    rotation = rotation + angleOffset;
                     break;
                 case '[':
-                    stack.push({position: points[points.length-1], yaw: yaw});
+                    stack.push({position: points[points.length-1], rotation: rotation});
                     break;
                 case ']':
                     let out = stack.pop();
                     points = [out.position];
-                    yaw = out.yaw;
+                    rotation = out.rotation;
                     break;
                 default:
                     moveForward();

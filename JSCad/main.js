@@ -1,4 +1,5 @@
 import { Fractal3D } from "./fractal3D.js";
+import { Fractal2D } from "./fractal2D.js";
 import { render } from './render.js';
 
 // https://openjscad.xyz/docs/module-modeling_colors.html#.colorize
@@ -12,8 +13,7 @@ const Snowflake = () => {
     });
     fractal.generateData();
     
-
-    return fractal.drawSVG({lineLength: 5, startAngle: 0, angleOffset: 60});
+    return fractal.drawSVG({lineLength: 5, startAngle: [0,0], angleOffset: 60});
 }
 
 const GosperCurve = () => {
@@ -30,16 +30,16 @@ const GosperCurve = () => {
 }
 
 const LSystemBush = () => {
-    let fractal = new Fractal3D({numLoops: 5, inputString:'Y', 
+    let fractal = new Fractal3D({numLoops: 6, inputString:'Y', 
     ruleset:{
       'X': 'X[-FFF][+FFF]FX',
-      'Y': 'YFX[+Y][-Y]',
+      'Y': 'YFX[>+Y][-Y<]',
     } 
     });
     fractal.generateData();
     
 
-    return fractal.drawSVG({lineLength: 5, startAngle: 0, angleOffset: -25.7, startingPoint: [0,0]});
+    return fractal.drawSVG({lineLength: 5, angleOffset: -25.7});
 }
 
-render(document.getElementById("render"), Snowflake())
+render(document.getElementById("render"), GosperCurve())
