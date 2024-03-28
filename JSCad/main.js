@@ -30,10 +30,10 @@ const GosperCurve = () => {
 }
 
 const LSystemBush = () => {
-    let fractal = new Fractal3D({numLoops: 6, inputString:'Y', 
+    let fractal = new Fractal3D({numLoops: 5, inputString:'Y', 
     ruleset:{
       'X': 'X[-FFF][+FFF]FX',
-      'Y': 'YFX[>+Y][-Y<]',
+      'Y': 'YFX>[+Y][-Y]<',
     } 
     });
     fractal.generateData();
@@ -42,4 +42,17 @@ const LSystemBush = () => {
     return fractal.drawSVG({lineLength: 5, angleOffset: -25.7});
 }
 
-render(document.getElementById("render"), GosperCurve())
+const Curve = () => {
+  let fractal = new Fractal3D({numLoops: 5, inputString:'A', 
+  ruleset:{
+    'A': '+BF-AFA-FB+',
+    'B': '-AF+BFB+FA-'
+  } 
+  });
+  fractal.generateData();
+  
+
+  return fractal.drawSVG({lineLength: 5, angleOffset: 90, ignoredChars: ["A","B"]});
+}
+
+render(document.getElementById("render"), LSystemBush())

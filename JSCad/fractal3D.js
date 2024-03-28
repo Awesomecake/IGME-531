@@ -31,7 +31,7 @@ export class Fractal3D{
         this.fractalString = newString;
     }
 
-    // options: {lineLength, startPitch, startYaw, angleOffset, startingPoint}
+    // options: {lineLength, startPitch, startYaw, startRoll, angleOffset, startingPoint, ignoredChars}
     drawSVG(options)
     {
         let objectList = [];
@@ -39,6 +39,7 @@ export class Fractal3D{
         // Basically constants
         let lineLength = options.lineLength || 10;
         let angleOffset = options.angleOffset * Math.PI / 180 || 90
+        let ignoredChars = options.ignoredChars || [];
 
         // State
         let yaw = options.startYaw*Math.PI/180 || 0;
@@ -54,7 +55,7 @@ export class Fractal3D{
         
             points.push([lastPoint[0] + dx, lastPoint[1] + dy, lastPoint[2] + dz]);
 
-            let object = transforms.scaleX(lineLength,cube({ size: 1 }));
+            let object = transforms.scaleX(lineLength+1,cube({ size: 1 }));
             object = transforms.rotate([0,-pitch,yaw],object);
             object = transforms.translate([lastPoint[0]+dx/2,lastPoint[1]+dy/2, lastPoint[2]+dz/2],object);
             objectList.push(object)
@@ -63,6 +64,9 @@ export class Fractal3D{
         let stack = [];
       
         const whatToDo = (char) => {
+            if(ignoredChars.includes(char))
+                return;
+
             switch (char)
             {
                 case '+':
@@ -78,12 +82,13 @@ export class Fractal3D{
                     pitch += angleOffset;
                     break;
                 case '[':
-                    stack.push({position: points[points.length-1], yaw: yaw});
+                    stack.push({position: points[points.length-1], yaw: yaw, pitch: pitch});
                     break;
                 case ']':
                     let out = stack.pop();
                     points = [out.position];
                     yaw = out.yaw;
+                    pitch = out.pitch;
                     break;
                 default:
                     moveForward();
