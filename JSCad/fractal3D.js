@@ -44,19 +44,23 @@ export class Fractal3D{
         // State
         let yaw = options.startYaw*Math.PI/180 || 0;
         let pitch = options.startPitch*Math.PI/180 || 0;
+        let roll = options.startRoll*Math.PI/180 || 0;
         let points = [options.startingPoint || [0,0,0]];
 
         const moveForward = () => {
             const lastPoint = points[points.length - 1];
                     
-            const dx = Math.cos(yaw) * Math.cos(pitch) * lineLength;
-            const dy = Math.sin(yaw) * Math.cos(pitch) * lineLength;
-            const dz = Math.sin(pitch) * lineLength;
+            // const dx = Math.cos(yaw) * Math.cos(pitch) * lineLength;
+            // const dy = Math.sin(yaw) * Math.cos(pitch) * lineLength;
+            // const dz = Math.sin(pitch) * lineLength;
+            const dy = (-Math.cos(yaw)*Math.sin(pitch)*Math.sin(roll)-Math.sin(yaw)*Math.cos(roll)) * lineLength;
+            const dx = (-Math.sin(yaw)*Math.sin(pitch)*Math.sin(roll)+Math.cos(yaw)*Math.cos(roll)) * lineLength;
+            const dz = Math.cos(pitch)*Math.sin(roll) * lineLength;
         
             points.push([lastPoint[0] + dx, lastPoint[1] + dy, lastPoint[2] + dz]);
 
             let object = transforms.scaleX(lineLength+1,cube({ size: 1 }));
-            object = transforms.rotate([0,-pitch,yaw],object);
+            object = transforms.rotate([pitch,-roll,-yaw],object);
             object = transforms.translate([lastPoint[0]+dx/2,lastPoint[1]+dy/2, lastPoint[2]+dz/2],object);
             objectList.push(object)
         };
@@ -76,19 +80,26 @@ export class Fractal3D{
                     yaw += angleOffset;
                     break;
                 case '<':
-                    pitch -= angleOffset;
+                    roll -= angleOffset;
                     break;
                 case '>':
+                    roll += angleOffset;
+                    break;
+                case '^':
                     pitch += angleOffset;
                     break;
+                case '&':
+                    pitch -= angleOffset;
+                    break;
                 case '[':
-                    stack.push({position: points[points.length-1], yaw: yaw, pitch: pitch});
+                    stack.push({position: points[points.length-1], yaw: yaw, pitch: pitch, roll: roll});
                     break;
                 case ']':
                     let out = stack.pop();
                     points = [out.position];
                     yaw = out.yaw;
                     pitch = out.pitch;
+                    roll = out.roll;
                     break;
                 default:
                     moveForward();

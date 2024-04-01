@@ -6,7 +6,7 @@ import { render } from './render.js';
 // https://openjscad.xyz/docs/module-modeling_colors.html#.colorNameToRgb
 
 const Snowflake = () => {
-    let fractal = new Fractal3D({numLoops: 4, inputString:'F++F++F', 
+    let fractal = new Fractal3D({numLoops: 3, inputString:'F++F++F', 
     ruleset:{
       'F': 'F-F++F-F'
     } 
@@ -43,16 +43,15 @@ const LSystemBush = () => {
 }
 
 const Curve = () => {
-  let fractal = new Fractal3D({numLoops: 5, inputString:'A', 
+  let fractal = new Fractal3D({numLoops: 2, inputString:'X', 
   ruleset:{
-    'A': '+BF-AFA-FB+',
-    'B': '-AF+BFB+FA-'
+    'X': 'F^F^F+F+F>F>F',
   } 
   });
   fractal.generateData();
   
 
-  return fractal.drawSVG({lineLength: 5, angleOffset: 90, ignoredChars: ["A","B"]});
+  return fractal.drawSVG({lineLength: 5, angleOffset: 90, ignoredChars: ["X"," "]});
 }
 
 render(document.getElementById("render"), LSystemBush())
