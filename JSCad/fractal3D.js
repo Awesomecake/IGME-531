@@ -1,4 +1,4 @@
-const { booleans, colors, primitives, transforms } = jscadModeling // modeling comes from the included MODELING library
+const { booleans, colors, primitives, transforms, hulls } = jscadModeling // modeling comes from the included MODELING library
 
 const { intersect, subtract, union } = booleans
 const { colorize, colorNameToRgb } = colors
@@ -32,9 +32,10 @@ export class Fractal3D{
     }
 
     // options: {lineLength, startPitch, startYaw, startRoll, angleOffset, startingPoint, ignoredChars}
-    drawSVG(options)
+    drawFractal(options)
     {
         let objectList = [];
+        let hullList = [];
   
         // Basically constants
         let lineLength = options.lineLength || 10;
@@ -47,21 +48,20 @@ export class Fractal3D{
         let roll = options.startRoll*Math.PI/180 || 0;
         let points = [options.startingPoint || [0,0,0]];
 
+        let object = cube({center: points[0], size: 0.5})
+        objectList.push(object);
+
         const moveForward = () => {
             const lastPoint = points[points.length - 1];
                     
-            // const dx = Math.cos(yaw) * Math.cos(pitch) * lineLength;
-            // const dy = Math.sin(yaw) * Math.cos(pitch) * lineLength;
-            // const dz = Math.sin(pitch) * lineLength;
             const dy = (-Math.cos(yaw)*Math.sin(pitch)*Math.sin(roll)-Math.sin(yaw)*Math.cos(roll)) * lineLength;
             const dx = (-Math.sin(yaw)*Math.sin(pitch)*Math.sin(roll)+Math.cos(yaw)*Math.cos(roll)) * lineLength;
             const dz = Math.cos(pitch)*Math.sin(roll) * lineLength;
         
             points.push([lastPoint[0] + dx, lastPoint[1] + dy, lastPoint[2] + dz]);
 
-            let object = transforms.scaleX(lineLength+1,cube({ size: 1 }));
-            object = transforms.rotate([pitch,-roll,-yaw],object);
-            object = transforms.translate([lastPoint[0]+dx/2,lastPoint[1]+dy/2, lastPoint[2]+dz/2],object);
+            let object = cube({center: [lastPoint[0] + dx, lastPoint[1] + dy, lastPoint[2] + dz], size: 0.5})
+
             objectList.push(object)
         };
       
@@ -100,6 +100,10 @@ export class Fractal3D{
                     yaw = out.yaw;
                     pitch = out.pitch;
                     roll = out.roll;
+
+                    hullList.push(jscadModeling.hulls.hullChain(objectList));
+                    const lastPoint = points[points.length - 1];
+                    objectList = [cube({center: lastPoint, size: 0.5})];
                     break;
                 default:
                     moveForward();
@@ -110,6 +114,8 @@ export class Fractal3D{
             whatToDo(this.fractalString[i]);
         }
 
-        return objectList;
+        hullList.push(jscadModeling.hulls.hullChain(objectList));
+
+        return hullList;
     }
 }
