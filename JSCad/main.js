@@ -13,7 +13,7 @@ const Snowflake = () => {
     });
     fractal.generateData();
     
-    return fractal.drawFractal({lineLength: 5, startAngle: [0,0], angleOffset: 60});
+    return fractal.drawFractal({lineLength: 5, angleOffset: 60});
 }
 
 const GosperCurve = () => {
@@ -26,7 +26,7 @@ const GosperCurve = () => {
     fractal.generateData();
     
 
-    return fractal.drawFractal({lineLength: 5, startAngle: 0, angleOffset: 60});
+    return fractal.drawFractal({lineLength: 5, angleOffset: 60});
 }
 
 const LSystemBush = () => {
@@ -55,4 +55,30 @@ const Tree = () => {
   return fractal.drawFractal({lineLength: 5, angleOffset: 22.5, startRoll: -30});
 }
 
-render(document.getElementById("render"), Tree())
+const BinaryTree3D = () => {
+  let fractal = new Fractal3D({numLoops: 5, inputString:'F', 
+  ruleset:{
+    'F': 'G)[+F][>F][<F]-F',
+    'G': 'GG'
+  } 
+  });
+  fractal.generateData();
+  
+
+  return fractal.drawFractal({lineLength: 15, angleOffset: 40, lineWidth: 10});
+}
+
+const FractalPlant = () => {
+  let fractal = new Fractal3D({numLoops: 4, inputString:'X', 
+  ruleset:{
+    'X': 'F+)[>[>X]-X][<[<X]&X]---)F+X',
+    'F': 'FF'
+  } 
+  });
+  fractal.generateData();
+  
+
+  return fractal.drawFractal({lineLength: 25, angleOffset: 25, lineWidth: 12}).concat(fractal.drawFractal({lineLength: 25, angleOffset: -25, lineWidth: 12}));
+}
+
+render(document.getElementById("render"), FractalPlant())
