@@ -1,8 +1,7 @@
 const { booleans, colors, primitives, transforms } = jscadModeling // modeling comes from the included MODELING library
-
 const { cube } = primitives
 
-export class Fractal2D{
+export class LSystem2D{
     constructor({numLoops, inputString, ruleset})
     {
         this.numLoops = numLoops;

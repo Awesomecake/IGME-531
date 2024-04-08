@@ -4,7 +4,7 @@ const { intersect, subtract, union } = booleans
 const { colorize, colorNameToRgb } = colors
 const { cube, sphere, rectangle } = primitives
 
-export class Fractal3D{
+export class LSystem3D{
     constructor({numLoops, inputString, ruleset})
     {
         this.numLoops = numLoops;
