@@ -3,7 +3,7 @@ import { LSystem2D } from "./Fractals/LSystem2D.js";
 import { render } from './render.js';
 
 const { booleans, colors, primitives, transforms, hulls } = jscadModeling // modeling comes from the included MODELING library
-const { cube, sphere, rectangle } = primitives
+const { cube, sphere, rectangle, polyhedron } = primitives
 
 // https://openjscad.xyz/docs/module-modeling_colors.html#.colorize
 // https://openjscad.xyz/docs/module-modeling_colors.html#.colorNameToRgb
@@ -82,7 +82,7 @@ const FractalPlant = () => {
 //#endregion
 
 //scaling, baseDepth
-const RecursiveCube = (options) => {
+const RecursiveCube = (options = {scaling: 0.5, baseDepth: 5}) => {
   let shapeList = [];
   let scaling = options.scaling || 0.5;
   let baseDepth = options.baseDepth || 5;
@@ -109,4 +109,36 @@ const RecursiveCube = (options) => {
   return shapeList;
 }
 
-render(document.getElementById("render"),FractalPlant() )
+//scaling, baseDepth
+const RecursivePyramid = (options = {scaling: 0.5, baseDepth: 5}) => {
+  let shapeList = [];
+  let scaling = options.scaling || 0.5;
+  let baseDepth = options.baseDepth || 5;
+
+  const MakePyramid = (scale) =>
+  {
+    let mypoints = [ [scale, scale, 0], [scale, -scale, 0], [-scale, -scale, 0], [-scale, scale, 0], [0, 0, scale] ]
+    let myfaces = [ [0, 1, 4], [1, 2, 4], [2, 3, 4], [3, 0, 4], [1, 0, 3], [2, 1, 3] ]
+    return polyhedron({points: mypoints, faces: myfaces, orientation: 'inward'})
+  }
+
+  const recursivePyramid = (size, position, depth) => {
+    if (depth === 0) return;
+
+    shapeList.push(transforms.rotateX(Math.PI*(baseDepth-depth),transforms.translate(position, MakePyramid(size))));
+
+    let hOffset = size;
+
+    recursivePyramid(size * scaling, [position[0]+hOffset,position[1],position[2]], depth - 1);
+    recursivePyramid(size * scaling, [position[0]-hOffset,position[1],position[2]], depth - 1);
+
+    recursivePyramid(size * scaling, [position[0],position[1]+hOffset,position[2]], depth - 1);
+    recursivePyramid(size * scaling, [position[0],position[1]-hOffset,position[2]], depth - 1);
+  }
+
+  recursivePyramid(50, [0,0,0], baseDepth);
+
+  return shapeList;
+}
+
+render(document.getElementById("render"),RecursiveCube() )

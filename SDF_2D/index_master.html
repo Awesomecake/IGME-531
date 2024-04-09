@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Demo Application</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <svg id="render_svg" width="800" height="550"></svg>
+    <canvas id="render_canvas" width="800" height="550"></canvas>
+
+    <script type="module" language="javascript">
+        import {renderColorField} from './colorField.js';
+        import {sdfToColorField} from './render.js';
+        import {renderFlowField} from './flowField.js';
+        import { circle, rect, translate, rotate, scale, reflectX, invert, round, union, subtract, intersect, smoothUnion, smoothSubtract, smoothIntersect, repeatX, repeatY, repeat } from './sdf.js';
+
+        const canvas = document.getElementById('render_canvas');
+        const svg = document.getElementById('render_svg')
+
+        svg.style.display = 'none';
+        const colorField = sdfToColorField(
+            union(
+                // union(rect(260, 100), circle(100)),
+                reflectX(rotate(Math.PI, translate(300, 0, rect(80, 80)))),
+                scale(1, rect(50,50))
+            )
+        )
+        // const colorField = sdfToColorField(
+        //     repeat(100, 200, rect(50, 50))
+        // )
+
+        import FastNoiseLite from 'https://unpkg.com/fastnoise-lite@1.1.0/FastNoiseLite.js';
+        
+        let sdfNoise = new FastNoiseLite(777);
+        sdfNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        sdfNoise.SetFrequency(1 / 500);
+
+        const noiseSDF = (x, y) => {
+            return 1000 * sdfNoise.GetNoise(x, y, 0);
+        };
+        const someRects = repeat(200, 200, rect(50, 50))
+        const sdf = smoothSubtract(10, noiseSDF, someRects);
+
+        renderColorField(sdfToColorField(sdf), canvas)
+
+
+        // import FastNoiseLite from 'https://unpkg.com/fastnoise-lite@1.1.0/FastNoiseLite.js';
+        
+        // let angleNoise = new FastNoiseLite(0);
+        // angleNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        // angleNoise.SetFrequency(1 / 1000);
+
+        // let colorNoise = new FastNoiseLite(100);
+        // colorNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        // colorNoise.SetFrequency(1 / 100);
+
+        // let strokeWidthNoise = new FastNoiseLite(200);
+        // strokeWidthNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        // strokeWidthNoise.SetFrequency(1 / 1000);
+
+        // canvas.style.display = 'none';
+        // const angleField = (x, y) => {
+        //     return angleNoise.GetNoise(x, y, 0) * Math.PI * 2;
+        // };
+        // const colorField = (x, y) => {
+        //     const noise = colorNoise.GetNoise(x, y, 0);
+            
+        //     if (Math.abs(noise) < 0.1) {
+        //         return 'black'
+        //     }
+        //     if (noise < 0) {
+        //         return 'blue'
+        //     } else {
+        //         return 'red'
+        //     }
+        // };
+        // const strokeWidthField = (x, y) => {
+        //     const noise = strokeWidthNoise.GetNoise(x, y, 0);
+
+        //     return Math.abs(noise) * 4 + 1;
+        // };
+        // renderFlowField({
+        //     svg,
+        //     distanceBetweenPoints: 8,
+        //     angle: angleField,
+        //     color: colorField,
+        //     strokeWidth: strokeWidthField
+        // });
+
+    </script>
+</body>
+
+</html>

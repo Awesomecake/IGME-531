@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Demo Application</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <canvas id="render_canvas" width="800" height="550"></canvas>
+
+    <script type="module" language="javascript">
+        import {renderColorField, sdfToColorField} from './colorField.js';
+        import {renderFlowField} from './flowField.js';
+        import { shape, transform, op } from './sdf.js';
+
+        const canvas = document.getElementById('render_canvas');
+
+        const colorField = (x, y) => {
+            return Math.sin(x * y / 100)  > 0
+                ? [0,0,1,1]
+                : [1,1,0,1];
+        }
+
+        const draw = () => {
+            return sdfToColorField(shape.rect(0,0,500,500))
+        }
+    
+        renderColorField(draw(), canvas);
+        
+    </script>
+</body>
+
+</html>
