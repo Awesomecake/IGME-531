@@ -81,9 +81,11 @@ const FractalPlant = () => {
 }
 //#endregion
 
-
-const RecursiveCube = (scaling, baseDepth) => {
+//scaling, baseDepth
+const RecursiveCube = (options) => {
   let shapeList = [];
+  let scaling = options.scaling || 0.5;
+  let baseDepth = options.baseDepth || 5;
 
   const recursiveCube = (size, position, depth) => {
     if (depth === 0) return;
@@ -107,4 +109,4 @@ const RecursiveCube = (scaling, baseDepth) => {
   return shapeList;
 }
 
-render(document.getElementById("render"),RecursiveCube(0.5, 5) )
+render(document.getElementById("render"),FractalPlant() )
