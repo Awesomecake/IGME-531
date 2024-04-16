@@ -1,9 +1,10 @@
 import { LSystem3D } from "./Fractals/LSystem3D.js";
 import { LSystem2D } from "./Fractals/LSystem2D.js";
+import { theFractal } from "./geodesic.js";
 import { render } from './render.js';
 
 const { booleans, colors, primitives, transforms, hulls } = jscadModeling // modeling comes from the included MODELING library
-const { cube, sphere, rectangle, polyhedron } = primitives
+const { cube, sphere, rectangle, polyhedron, geodesicSphere } = primitives
 
 // https://openjscad.xyz/docs/module-modeling_colors.html#.colorize
 // https://openjscad.xyz/docs/module-modeling_colors.html#.colorNameToRgb
@@ -141,4 +142,4 @@ const RecursivePyramid = (options = {scaling: 0.5, baseDepth: 5}) => {
   return shapeList;
 }
 
-render(document.getElementById("render"),RecursiveCube() )
+render(document.getElementById("render"),theFractal) // frequency should be a multiple of 6
